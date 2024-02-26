@@ -1,0 +1,26 @@
+-> expr
+
+(Int) expr : term exprs(term) { exprs } ;
+(Int) exprs <Int curr> : PLUS term { val next = curr + term } exprs(next) { exprs } |
+                          MINUS term { val next = curr - term } exprs(next) { exprs } |
+                          { curr } ;
+(Int) term : factor terms(factor) { terms } ;
+(Int) terms <Int curr> : MUL factor terms({ curr * factor }) { terms } |
+                          DIV factor terms({ curr / factor }) { terms } |
+                          { curr } ;
+(Int) factor : single logs(single) {logs};
+(Int) logs <Int curr> : LOG single logs(single) {kotlin.math.log(curr.toDouble(), logs.toDouble()).toInt()} | {curr};
+
+(Int) single : OPEN expr CLOSE { expr } | num { num } ;
+(Int) num : NUM { NUM.toInt() } ;
+
+LOG = "//";
+PLUS = "+";
+MINUS = "-";
+MUL = "*";
+DIV = "/";
+OPEN = "(";
+CLOSE = ")";
+NUM = '[0-9]+';
+
+WS \= '\s+';

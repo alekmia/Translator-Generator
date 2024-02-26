@@ -1,0 +1,21 @@
+-> start
+
+(Tree) start : name COLON { val colon = Tree("\":\"", true) } after { Tree("start", false, name, colon, after) } ;
+(Tree) more : SEMICOLON { val semicolon = Tree("\";\"", true) } start { Tree("more", false, semicolon, start) } |
+        { Tree("more", false, Tree("eps", false)) } ;
+(Tree) name : pref ID {val id = Tree("ID", true)} { Tree("name", false, pref, id) } ;
+(Tree) after : ID {val id = Tree("TYPE", true)} eq { Tree("after", false, id, eq) } ;
+(Tree) eq : EQUALS { val equals = Tree("\"=\"", true) } value more { Tree("eq", false, equals, value, more) } |
+        more { Tree("eq", false, more) } | { Tree("eq", false, Tree("eps", false)) } ;
+(Tree) pref : VAR { Tree("pref", false, Tree("VAR", true)) } | VAL { Tree("pref", false, Tree("VAL", true)) } ;
+(Tree) value : NUM { Tree("pref", false, Tree("NUM", true)) } | ID { Tree("pref", false, Tree("ID", true)) } ;
+
+COLON = ":";
+SEMICOLON = ";";
+EQUALS = "=";
+VAR = "var";
+VAL = "val";
+NUM = '[0-9]+';
+ID = '[a-zA-Z]+';
+
+WS \= '\s+';
